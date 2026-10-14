@@ -1,0 +1,509 @@
+<UserControl x:Class="AimSync.App.Views.MacrosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:AimSync.App.Controls">
+    <UserControl.Resources>
+        <Style x:Key="MacroBox" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource InputBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="CaretBrush" Value="{StaticResource TextPrimary}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource AccentBrush}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="MacroList" TargetType="ListBox">
+            <Setter Property="Background" Value="{StaticResource InputBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+        <Style x:Key="MacroListItem" TargetType="ListBoxItem">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Padding" Value="12,9" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Item"
+                                Background="Transparent"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="2">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Item" Property="Background" Value="{StaticResource CardBackgroundHover}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Item" Property="Background" Value="{StaticResource NavItemSelected}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="MacroTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" />
+                    <TextBlock Text="{Binding TriggerLabel, StringFormat=→ {0}}"
+                               Foreground="{StaticResource TextMuted}"
+                               FontSize="11"
+                               Margin="0,2,0,0" />
+                </StackPanel>
+                <Border Grid.Column="1" CornerRadius="6" Background="{StaticResource CardBorder}"
+                        Padding="7,3" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Enabled, Converter={StaticResource BoolToStateText}}"
+                               FontSize="10" FontWeight="Bold" />
+                </Border>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Turbo y Macros" Style="{StaticResource PageTitle}" />
+            <TextBlock Text="Ráfagas de gatillos y de botones con velocidad independiente, y secuencias de botones asignadas a cada botón del mando virtual"
+                       Style="{StaticResource PageSubtitle}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      Style="{StaticResource PagePanel}"
+                      Margin="0,20,0,0">
+            <StackPanel>
+                <!-- ============ TURBO ============ -->
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Modo turbo" Style="{StaticResource CardTitle}" />
+                                <TextBlock Text="Pulsa gatillos y botones en ráfaga a la frecuencia elegida mientras mantienes la entrada: cada ciclo mantiene la pulsación durante la duración indicada y la suelta el resto. Los juegos ignoran pulsos de pocos milisegundos, por eso el ciclo usa tiempos realistas (p. ej. 10 Hz al 50% = 48 ms ON + 52 ms OFF)."
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextMuted}"
+                                           Margin="0,5,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <CheckBox Grid.Column="1"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding TurboEnabled, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,16,0,0" />
+
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="26" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Gatillo izquierdo (LT)"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12.5"
+                                       VerticalAlignment="Center" />
+                            <CheckBox Grid.Column="1"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding TurboLeft, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="3" Text="Gatillo derecho (RT)"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12.5"
+                                       VerticalAlignment="Center" />
+                            <CheckBox Grid.Column="4"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding TurboRight, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Frecuencia de gatillos (pulsos por segundo)" Style="{StaticResource SectionLabel}"
+                                   Margin="0,18,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding FreqMinValue}"
+                                                Maximum="{Binding FreqMaxValue}"
+                                                SmallChange="0.1"
+                                                LargeChange="1"
+                                                Value="{Binding TurboTriggerFrequency, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TurboTriggerFrequency, StringFormat={}{0:0.0} Hz}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Duración del pulso de gatillos (porcentaje del ciclo)" Style="{StaticResource SectionLabel}"
+                                   Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding DutyMinValue}"
+                                                Maximum="{Binding DutyMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding TurboTriggerDuty, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TurboTriggerDuty, StringFormat={}{0:P0}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Estos controles afectan solo a los gatillos en ráfaga. La velocidad de la ráfaga de botones se configura por separado en su propia tarjeta. P. ej. 10 Hz al 50% = el gatillo se mantiene la mitad del ciclo y se suelta la otra, 10 veces por segundo."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,14,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ============ GATILLO DERECHO (RT) - MODO NORMAL ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Gatillo derecho (RT) — modo normal" Style="{StaticResource CardTitle}" />
+                        <TextBlock Text="Ajusta el valor analógico del gatillo derecho (0–255) antes de enviarlo al mando virtual. Con Sensibilidad 100 % y Umbral 0 % el gatillo pasa intacto: respuesta lineal, sin interrupciones ni pulsaciones. Esto afecta al disparo normal; el modo turbo de gatillos es independiente y solo actúa si lo activas arriba."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,5,0,0"
+                                   TextWrapping="Wrap" />
+
+                        <TextBlock Text="Sensibilidad" Style="{StaticResource SectionLabel}" Margin="0,16,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding RtSensitivityMinValue}"
+                                                Maximum="{Binding RtSensitivityMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.1"
+                                                Value="{Binding RightTriggerSensitivity, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding RightTriggerSensitivity, StringFormat={}{0:P0}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                        <TextBlock Text="100 % = sin cambios. Por encima, el gatillo alcanza su valor máximo con menos recorrido; por debajo, hay que pulsarlo más a fondo."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap" />
+
+                        <TextBlock Text="Umbral de activación" Style="{StaticResource SectionLabel}" Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding RtThresholdMinValue}"
+                                                Maximum="{Binding RtThresholdMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding RightTriggerThreshold, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding RightTriggerThreshold, StringFormat={}{0:P0}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                        <TextBlock Text="0 % = sin umbral. Súbelo solo si el gatillo marca valores en reposo: por debajo del umbral, AimSync envía 0."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ============ RÁFAGA MÁXIMA DE BOTONES ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Ráfaga máxima de botones" Style="{StaticResource CardTitle}" />
+                                <TextBlock Text="Mientras mantengas el botón (en el mando físico o en su tecla mapeada), el botón se pulsa repetidamente con la velocidad configurada aquí, independiente de la de los gatillos. Con 10 Hz y 50% cada pulsación dura ~48 ms: suficiente para que el juego la registre (cambio de arma rápido con Y, o disparo semiauto como automático)."
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextMuted}"
+                                           Margin="0,5,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,16,0,0" />
+
+                        <TextBlock Text="Frecuencia de botones (pulsos por segundo)" Style="{StaticResource SectionLabel}"
+                                   Margin="0,16,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding FreqMinValue}"
+                                                Maximum="{Binding FreqMaxValue}"
+                                                SmallChange="0.1"
+                                                LargeChange="1"
+                                                Value="{Binding TurboButtonFrequency, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TurboButtonFrequency, StringFormat={}{0:0.0} Hz}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Duración del pulso de botones (porcentaje del ciclo)" Style="{StaticResource SectionLabel}"
+                                   Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding DutyMinValue}"
+                                                Maximum="{Binding DutyMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding TurboButtonDuty, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TurboButtonDuty, StringFormat={}{0:P0}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,16,0,0" />
+
+                        <ItemsControl ItemsSource="{Binding RapidButtons}" Margin="0,14,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,20,10">
+                                        <CheckBox Style="{StaticResource ToggleSwitchStyle}"
+                                                  IsChecked="{Binding Enabled, Mode=TwoWay}"
+                                                  VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Label}"
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   FontSize="12.5"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0,0,0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Requiere el interruptor «Modo turbo» activado para funcionar. Para disparo semiauto automático marca «Gatillo derecho (RT)» y mantén pulsado el disparador físico. Para cambio de arma rápido añade Y a la ráfaga y mantén Y en el mando."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,6,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ============ MACROS ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Macros de botones" Style="{StaticResource CardTitle}" />
+                                <TextBlock Text="Al pulsar la entrada mapeada de un botón (p. ej. Espacio → A), se reproduce la secuencia de pasos asignada a ese botón."
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextMuted}"
+                                           Margin="0,5,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <CheckBox Grid.Column="1"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding MacrosEnabled, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Grid Margin="0,18,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Lista de macros -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Macros" Style="{StaticResource SectionLabel}" />
+                                <ListBox Width="260"
+                                         Height="280"
+                                         Margin="0,8,0,0"
+                                         Style="{StaticResource MacroList}"
+                                         ItemContainerStyle="{StaticResource MacroListItem}"
+                                         ItemTemplate="{StaticResource MacroTemplate}"
+                                         ItemsSource="{Binding Macros}"
+                                         SelectedItem="{Binding SelectedMacro}" />
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Button Content="AÑADIR"
+                                            Style="{StaticResource GhostButton}"
+                                            Padding="14,6"
+                                            FontSize="12"
+                                            Command="{Binding AddMacroCommand}" />
+                                    <Button Content="ELIMINAR"
+                                            Style="{StaticResource DangerButton}"
+                                            Padding="14,6"
+                                            FontSize="12"
+                                            Margin="8,0,0,0"
+                                            Command="{Binding RemoveMacroCommand}" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Editor de la macro seleccionada -->
+                            <Border Grid.Column="2"
+                                    IsEnabled="{Binding HasSelectedMacro}">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Nombre" Style="{StaticResource SectionLabel}" />
+                                            <TextBox Style="{StaticResource MacroBox}"
+                                                     Margin="0,8,0,0"
+                                                     Text="{Binding SelectedMacro.Name, Mode=TwoWay}"
+                                                     MaxWidth="300"
+                                                     HorizontalAlignment="Left" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                                            <TextBlock Text="Repetir mientras se mantiene" Style="{StaticResource SectionLabel}" />
+                                            <CheckBox Style="{StaticResource ToggleSwitchStyle}"
+                                                      IsChecked="{Binding SelectedMacro.Loop, Mode=TwoWay}"
+                                                      Margin="0,8,0,0"
+                                                      HorizontalAlignment="Right" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <TextBlock Text="Botón disparador" Style="{StaticResource SectionLabel}"
+                                               Margin="0,14,0,8" />
+                                    <ComboBox Style="{StaticResource DeviceComboBox}"
+                                              ItemContainerStyle="{StaticResource DeviceComboItem}"
+                                              MinWidth="220"
+                                              ItemsSource="{Binding ButtonOptions}"
+                                              SelectedValuePath="Value"
+                                              SelectedValue="{Binding SelectedMacro.TriggerButton, Mode=TwoWay}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Label}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <Grid Margin="0,16,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Secuencia de pasos" Style="{StaticResource SectionLabel}"
+                                                   VerticalAlignment="Center" />
+                                        <Button Grid.Column="1"
+                                                Content="AÑADIR PASO"
+                                                Style="{StaticResource GhostButton}"
+                                                Padding="12,5"
+                                                FontSize="11.5"
+                                                Command="{Binding AddStepCommand}" />
+                                    </Grid>
+
+                                    <ItemsControl ItemsSource="{Binding SelectedMacro.Steps}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                                        <ComboBox Width="180"
+                                                                  HorizontalAlignment="Left"
+                                                                  Style="{StaticResource DeviceComboBox}"
+                                                                  ItemContainerStyle="{StaticResource DeviceComboItem}"
+                                                                  MinWidth="160"
+                                                                  ItemsSource="{Binding DataContext.ButtonOptions, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                  SelectedValuePath="Value"
+                                                                  SelectedValue="{Binding Button, Mode=TwoWay}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Label}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </ComboBox>
+                                                        <TextBox Style="{StaticResource MacroBox}"
+                                                                 Width="86"
+                                                                 Margin="8,0,0,0"
+                                                                 Text="{Binding DurationMs}" />
+                                                        <TextBlock Text="ms"
+                                                                   Foreground="{StaticResource TextMuted}"
+                                                                   FontSize="12"
+                                                                   VerticalAlignment="Center"
+                                                                   Margin="6,0,0,0" />
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1"
+                                                            Content="✕"
+                                                            Style="{StaticResource DangerButton}"
+                                                            Padding="0"
+                                                            MinWidth="30"
+                                                            Height="30"
+                                                            VerticalAlignment="Center"
+                                                            Command="{Binding DataContext.RemoveStepCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                            CommandParameter="{Binding}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock Text="Cada paso mantiene un botón pulsado durante la duración indicada. Las macros se disparan con el botón seleccionado; con «repetir» activo se repiten mientras lo mantengas."
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextMuted}"
+                                               Margin="0,6,0,0"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

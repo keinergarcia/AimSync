@@ -1,0 +1,416 @@
+<UserControl x:Class="AimSync.App.Views.AntiRecoilView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:AimSync.App.Controls">
+    <UserControl.Resources>
+        <Style x:Key="LiveFiringText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Firing}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource OkBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Anti Recoil" Style="{StaticResource PageTitle}" />
+            <TextBlock Text="Compensación de retroceso por arma (empuje vertical y horizontal) y oscilación del stick izquierdo"
+                       Style="{StaticResource PageSubtitle}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1"
+                      Style="{StaticResource PagePanel}"
+                      Margin="0,20,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="16" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- ESTADO -->
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Estado" Style="{StaticResource CardTitle}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                            <RadioButton GroupName="Weapon"
+                                         IsChecked="{Binding IsOff}"
+                                         Foreground="{StaticResource TextPrimary}"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,18,0">
+                                <TextBlock Text="Desactivado" Foreground="{StaticResource TextPrimary}" />
+                            </RadioButton>
+                            <RadioButton GroupName="Weapon"
+                                         IsChecked="{Binding IsArma1}"
+                                         Foreground="{StaticResource TextPrimary}"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,18,0">
+                                <TextBlock Text="ARMA 1" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+                            </RadioButton>
+                            <RadioButton GroupName="Weapon"
+                                         IsChecked="{Binding IsArma2}"
+                                         Foreground="{StaticResource TextPrimary}"
+                                         VerticalAlignment="Center">
+                                <TextBlock Text="ARMA 2" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+                            </RadioButton>
+                        </StackPanel>
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,16,0,0" />
+
+                        <TextBlock Text="{Binding StatusText}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource OkBrush}"
+                                   Margin="0,14,0,0" />
+                        <TextBlock Text="{Binding StatusHint}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,6,0,0"
+                                   TextWrapping="Wrap" />
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,16,0,0" />
+
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Detección automática de arma" Style="{StaticResource CardTitle}"
+                                           FontSize="13" />
+                                <TextBlock Text="Cambia de arma con las teclas 1/2, o con la rueda del ratón."
+                                           FontSize="11"
+                                           Foreground="{StaticResource TextMuted}"
+                                           Margin="0,4,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <CheckBox Grid.Column="1"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding WeaponDetectionEnabled, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Arma activa en juego:"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding ActiveWeaponDisplay}"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,14,0,0" />
+
+                        <TextBlock Text="Estado en vivo" Style="{StaticResource CardTitle}" FontSize="13"
+                                   Margin="0,14,0,0" />
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Disparo (gatillo derecho):"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding FiringText}"
+                                       Style="{StaticResource LiveFiringText}"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Fuerza enviada al stick derecho (Y):"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding OutputRightY, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding OutputRightYRaw, StringFormat=({0})}"
+                                       Foreground="{StaticResource TextMuted}"
+                                       FontSize="11"
+                                       FontFamily="Consolas"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Fuerza enviada al stick derecho (X):"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding OutputRightX, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding OutputRightXRaw, StringFormat=({0})}"
+                                       Foreground="{StaticResource TextMuted}"
+                                       FontSize="11"
+                                       FontFamily="Consolas"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                        <TextBlock Text="Con −100% verás −100% aquí mientras disparas: es la fuerza máxima del stick. Si el arma aún sube, el retroceso del juego gira más rápido que el stick: sube la sensibilidad del stick derecho en el juego."
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap" />
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,14,0,0" />
+
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Refuerzo por ráfagas (experimental)" Style="{StaticResource CardTitle}"
+                                           FontSize="13" />
+                                <TextBlock Text="Bombea el empuje a ~20 Hz en vez de mantenerlo fijo. Si en tu juego contrarresta mejor el retroceso por disparo, actívalo; si sube más, déjalo apagado."
+                                           FontSize="11"
+                                           Foreground="{StaticResource TextMuted}"
+                                           Margin="0,4,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <CheckBox Grid.Column="1"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding PumpEnabled, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- OSCILACION STICK IZQUIERDO -->
+                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Oscilación (stick izquierdo)" Style="{StaticResource CardTitle}" />
+                            <CheckBox Grid.Column="1"
+                                      Style="{StaticResource ToggleSwitchStyle}"
+                                      IsChecked="{Binding Oscillation, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Intensidad" Style="{StaticResource SectionLabel}" Margin="0,16,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding StrengthMinValue}"
+                                                Maximum="{Binding StrengthMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding OscillationStrength, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding OscillationStrength, StringFormat={}{0:0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Velocidad (Hz)" Style="{StaticResource SectionLabel}" Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding FreqMinValue}"
+                                                Maximum="{Binding FreqMaxValue}"
+                                                SmallChange="0.1"
+                                                LargeChange="0.5"
+                                                Value="{Binding OscillationFrequency, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding OscillationFrequency, StringFormat={}{0:0.0} Hz}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Mueve el stick izquierdo de lado a lado mientras disparas."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,12,0,0"
+                                   TextWrapping="Wrap" />
+
+                        <Border Height="1" Background="{StaticResource CardBorder}" Margin="0,14,0,0" />
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Oscilación enviada al stick izquierdo (X):"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding OutputLeftX, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding OutputLeftXRaw, StringFormat=({0})}"
+                                       Foreground="{StaticResource TextMuted}"
+                                       FontSize="11"
+                                       FontFamily="Consolas"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                        <TextBlock Text="Si ves esta aguja moverse mientras disparas, la oscilación se está enviando al mando virtual. Si en el juego no se nota, sube la Intensidad (y usa una Velocidad baja, 2–12 Hz): las frecuencias altas el juego las filtra en el stick de movimiento."
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ARMA 1 -->
+                <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="ARMA 1 — Empuje" Style="{StaticResource CardTitle}" />
+                        <TextBlock Text="Fuerza de empuje vertical (−100% a +100%)"
+                                   Style="{StaticResource SectionLabel}"
+                                   Margin="0,16,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding VMinValue}"
+                                                Maximum="{Binding VMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding Arma1Vertical, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Arma1Vertical, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Fuerza de empuje horizontal (−100% a +100%)"
+                                   Style="{StaticResource SectionLabel}"
+                                   Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding HMinValue}"
+                                                Maximum="{Binding HMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding Arma1Horizontal, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Arma1Horizontal, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Desliza a la derecha (+) para empujar la mira hacia arriba; a la izquierda (−) para bajarla. Horizontal: negativo = izquierda, positivo = derecha."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,14,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ARMA 2 -->
+                <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="ARMA 2 — Empuje" Style="{StaticResource CardTitle}" />
+                        <TextBlock Text="Fuerza de empuje vertical (−100% a +100%)"
+                                   Style="{StaticResource SectionLabel}"
+                                   Margin="0,16,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding VMinValue}"
+                                                Maximum="{Binding VMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding Arma2Vertical, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Arma2Vertical, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="Fuerza de empuje horizontal (−100% a +100%)"
+                                   Style="{StaticResource SectionLabel}"
+                                   Margin="0,14,0,8" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <controls:AimSlider Grid.Column="0"
+                                                Minimum="{Binding HMinValue}"
+                                                Maximum="{Binding HMaxValue}"
+                                                SmallChange="0.01"
+                                                LargeChange="0.05"
+                                                Value="{Binding Arma2Horizontal, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Arma2Horizontal, StringFormat={}{0:+0%;-0%;0%}}"
+                                       Style="{StaticResource MonoText}"
+                                       Margin="14,0,0,0"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Text="El empuje se aplica mientras mantienes el disparo (gatillo derecho)."
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextMuted}"
+                                   Margin="0,14,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

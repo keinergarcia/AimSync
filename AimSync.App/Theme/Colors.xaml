@@ -1,0 +1,58 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Surfaces -->
+    <SolidColorBrush x:Key="WindowBackground" Color="#0E1116" />
+    <SolidColorBrush x:Key="SidebarBackground" Color="#11151C" />
+    <SolidColorBrush x:Key="CardBackground" Color="#171C25" />
+    <SolidColorBrush x:Key="CardBackgroundHover" Color="#1C2330" />
+    <SolidColorBrush x:Key="CardBorder" Color="#252E3D" />
+    <SolidColorBrush x:Key="InputBackground" Color="#10141B" />
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="TextPrimary" Color="#E6EDF3" />
+    <SolidColorBrush x:Key="TextSecondary" Color="#8B98A9" />
+    <SolidColorBrush x:Key="TextMuted" Color="#5A6879" />
+
+    <!-- Accent -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#00A8FF" />
+    <SolidColorBrush x:Key="AccentDim" Color="#00A8FF" />
+    <SolidColorBrush x:Key="AccentDeep" Color="#006699" />
+
+    <!-- Semantic -->
+    <SolidColorBrush x:Key="OkBrush" Color="#3FB950" />
+    <SolidColorBrush x:Key="WarnBrush" Color="#D29922" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#F85149" />
+    <SolidColorBrush x:Key="IdleBrush" Color="#6E7B8E" />
+
+    <!-- Toggle -->
+    <SolidColorBrush x:Key="ToggleTrackOff" Color="#2A3342" />
+    <SolidColorBrush x:Key="ToggleKnob" Color="#F2F5F9" />
+
+    <!-- Slider -->
+    <SolidColorBrush x:Key="SliderTrack" Color="#2A3342" />
+    <SolidColorBrush x:Key="SliderThumb" Color="#E6EDF3" />
+    <SolidColorBrush x:Key="SliderThumbHover" Color="#FFFFFF" />
+
+    <!-- Keys / Buttons -->
+    <SolidColorBrush x:Key="KeyIdle" Color="#232B38" />
+    <SolidColorBrush x:Key="KeyIdleBorder" Color="#323E4F" />
+    <SolidColorBrush x:Key="KeyActive" Color="#0E7CBF" />
+
+    <!-- Nav -->
+    <SolidColorBrush x:Key="NavItemHover" Color="#1C2432" />
+    <SolidColorBrush x:Key="NavItemSelected" Color="#14202E" />
+    <SolidColorBrush x:Key="NavIcon" Color="#7D8CA1" />
+    <SolidColorBrush x:Key="NavIconSelected" Color="#00A8FF" />
+
+    <!-- Tile -->
+    <SolidColorBrush x:Key="TileBackground" Color="#1A212D" />
+    <SolidColorBrush x:Key="TileBorder" Color="#293141" />
+
+    <SolidColorBrush x:Key="ButtonHoverOverlay" Color="#30FFFFFF" />
+    <SolidColorBrush x:Key="ButtonGhostHover" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="ButtonDangerHover" Color="#2EF85149" />
+
+    <DropShadowEffect x:Key="CardShadow" BlurRadius="18" ShadowDepth="0" Opacity="0.35" Color="#000000" />
+
+</ResourceDictionary>

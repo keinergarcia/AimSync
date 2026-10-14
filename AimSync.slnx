@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AimSync.App/AimSync.App.csproj" />
+  <Project Path="AimSync.Core/AimSync.Core.csproj" />
+  <Project Path="AimSync.Test/AimSync.Test.csproj" />
+</Solution>
